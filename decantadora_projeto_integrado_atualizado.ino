@@ -1,22 +1,22 @@
 #define tempo 3000 /*Definindo tempo para decantação (em estudo)*/
 
 /*Definindo Led's*/
-#define led_verde_dec 15
-#define led_amarelo_dec 13
-#define led_vazio_res 18
+#define led_verde_dec 2
+#define led_amarelo_dec 3
+#define led_vazio_res 6
 #define led_verde_res 5 
-#define led_cheio_res 12 
-#define led_alerta 19 
+#define led_cheio_res 4
+#define led_alerta 7
 
 /*Definindo sensores*/
-#define sensor_dec 34 
-#define sensor_cheio 35 
-#define sensor_vazio 32 
+#define sensor_dec A5 
+#define sensor_cheio A4 
+#define sensor_vazio A3 
 
 /*Definindo conexões de energia para os sensores*/
-#define energia_sensor_dec 23 
-#define energia_sensor_cheio 22
-#define energia_sensor_vazio 21 
+#define energia_sensor_dec 13 
+#define energia_sensor_cheio 12
+#define energia_sensor_vazio 11 
 
 /*Declarando variáveis para auxiliar no processo*/
 int aux_dec = 0;
@@ -62,7 +62,7 @@ void loop() {
   
   delay(1000);  /*Atraso de 1s entre leituras*/
   
-  if(nivel_sensor_dec > 500){ /*Verificar se o reservatório de decantação está com água*/
+  if(nivel_sensor_dec > 300){ /*Verificar se o reservatório de decantação está com água*/
     switch(aux_dec){
       case 0:{/*Caso seja a primeira vez rodando, ele irá acender o LED de espera (amarelo) e aguardará o tempo até que a decantação seja concluída*/
         digitalWrite(led_amarelo_dec, HIGH);
@@ -77,28 +77,29 @@ void loop() {
       }
     }
   }else{ /*Quando para de detectar água, ele reinicia as variáveis auxiliares e desliga todos os Led's*/
+    digitalWrite(led_amarelo_dec, LOW);
     digitalWrite(led_verde_dec, LOW);
     aux_dec = 0;
   }
   
-  if(nivel_sensor_cheio > 500 and nivel_sensor_vazio > 500){/*É verificado se os 2 sensores do reservatório estão dando sinal, para identificar um defeito no produto*/
+  if(nivel_sensor_cheio > 300 and nivel_sensor_vazio < 300){/*É verificado se os 2 sensores do reservatório estão dando sinal, para identificar um defeito no produto*/
     digitalWrite(led_cheio_res, LOW);
     digitalWrite(led_vazio_res, LOW);
     digitalWrite(led_verde_res, LOW);
     digitalWrite(led_alerta, HIGH);
   }else{ /*Se não estão, ele funciona normalmente*/
     digitalWrite(led_alerta, LOW);
-    if(nivel_sensor_cheio > 500){ /*Caso o reservatório esteja cheio ou perto de encher, é sinalizado ao cliente*/
+    if(nivel_sensor_cheio > 300){ /*Caso o reservatório esteja cheio ou perto de encher, é sinalizado ao cliente*/
       digitalWrite(led_cheio_res, HIGH);
     }else{
       digitalWrite(led_cheio_res, LOW);
     }
-    if(nivel_sensor_vazio > 500){ /*Caso o reservatório esteja vazio ou perto de esvaziar, é sinalizado ao cliente*/
+    if(!(nivel_sensor_vazio > 300)){ /*Caso o reservatório esteja vazio ou perto de esvaziar, é sinalizado ao cliente*/
       digitalWrite(led_vazio_res, HIGH);
     }else{
       digitalWrite(led_vazio_res, LOW);
     }
-    if((!nivel_sensor_cheio > 500) and !(nivel_sensor_vazio > 500)){ /*Caso o nível de água no reservatório seja bom, é sinalizado ao cliente*/
+    if(nivel_sensor_cheio < 300 and nivel_sensor_vazio > 300){ /*Caso o nível de água no reservatório seja bom, é sinalizado ao cliente*/
       digitalWrite(led_verde_res, HIGH);
     }else{
       digitalWrite(led_verde_res, LOW);
