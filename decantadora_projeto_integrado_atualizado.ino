@@ -1,4 +1,4 @@
-#define tempo 3000 /*Definindo tempo para decantação (em estudo)*/
+#define tempo 7200000 /*Definindo tempo para decantação*/
 
 /*Definindo Led's*/
 #define led_verde_dec 2
